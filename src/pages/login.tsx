@@ -3,6 +3,7 @@ import Head from "@docusaurus/Head";
 import Layout from "@theme/Layout";
 import clsx from "clsx";
 import { ConnectButton } from "../../src/components/atoms/connect-button";
+import { Card } from "../../src/components/atoms/user-card";
 import { useSorobanReact, SorobanReactProvider } from "@soroban-react/core";
 import { SorobanEventsProvider } from "@soroban-react/events";
 import { futurenet, sandbox, standalone } from "@soroban-react/chains";
@@ -12,39 +13,40 @@ import { ChainMetadata, Connector } from "@soroban-react/types";
 const chains: ChainMetadata[] = [sandbox, standalone, futurenet];
 const connectors: Connector[] = [freighter()];
 
-export default function Sorobanathon() {
+export default function Login({ children }: { children: React.ReactNode }) {
   return (
     <SorobanReactProvider
       chains={chains}
       connectors={connectors}
-      appName={"Sorobanathon"}
+      appName={"Login"}
     >
       <SorobanEventsProvider>
+        {children}
         <Layout>
-          <SorobanathonComponent />
+          <LoginComponent />
         </Layout>
       </SorobanEventsProvider>
     </SorobanReactProvider>
   );
 }
 
-function SorobanathonComponent() {
+function LoginComponent() {
   // Here you can use your hook
-  const {} = useSorobanReact();
+  const { address } = useSorobanReact();
 
   return (
-    <main className="sorobanathon">
-      <div className="hp--hero">
-        <div
-          className="hp--heroInfo hp--maxWidth"
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <ConnectButton label={"Connect Wallet"} />
-        </div>
+    <main className="login">
+      <div
+        className="hp--hero"
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        {!address && <ConnectButton label={"Connect Wallet"} />}
+        {address && <Card addressHex={address} />}
       </div>
     </main>
   );
