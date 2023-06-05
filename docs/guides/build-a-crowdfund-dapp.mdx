@@ -6,8 +6,6 @@ description: Learn how to build a Crowdfund DApp with Soroban.
 
 # Creating a Stellar-based Crowdfunding DApp with Soroban
 
-![Screenshot of the Example Dapp](../../static/img/crowdfund-screenshot.png)
-
 We'll be exploring an existing [End-to-End Example Soroban Dapp](https://github.com/stellar/soroban-example-dapp), using tools like Docker, Typescript, React, Rust and Soroban. This project was created by the Soroban team and members of the community, and is a fully-functioning Crowdfunding DApp. Users can start fundraising campaigns, and others can donate directly on the website using Soroban Tokens.
 
 1. [Introduction](#introduction)
@@ -548,15 +546,11 @@ export function Campaign() {
 }
 ```
 
-![Screenshot of the Example Dapp](../../static/img/campaign.png)
-
 ### Pledge Component
 
 The `Pledge` component is where users interact with the crowdfunding application, pledging tokens to the campaign of their choice. It serves as a data entry point, data fetcher and presenter.
 
 It uses contract RPC calls to pull important info from the token and crowdfunding contracts. It's interested in things like token balance, decimals, name, symbol, along with the crowdfunding contract's deadline and target amount.
-
-![Pledge](../../static/img/pledge.png)
 
 Lets breakdown the `Pledge` component into its constituent parts:
 
