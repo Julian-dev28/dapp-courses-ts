@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-//import useCompletedCourses from './useCompletedCourses';
+import styles from "./style.module.css";
+//import useCompletedCourses from '../hooks/useCompletedCourses';
 
 interface CardProps {
   addressHex: string;
@@ -18,7 +19,7 @@ const getCompletedCourses = (address: string) => {
 export function Card({ addressHex }: CardProps) {
   const [isCardExpanded, setIsCardExpanded] = useState(false);
   const [completedCourses, setCompletedCourses] = useState<string[]>([]);
-  //const { loading, error, completedCourses } = useCompletedCourses(addressHex);
+  // const { loading, error, completedCourses } = useCompletedCourses(addressHex);
 
   //   const toggleCardExpand = () => {
   //     setIsCardExpanded(!isCardExpanded);
@@ -33,13 +34,9 @@ export function Card({ addressHex }: CardProps) {
   }, [addressHex]);
 
   return (
-    <div
-      //   onClick={toggleCardExpand}
-      style={{ border: "1px solid black", width: "700px", padding: "8px" }}
-    >
+    <div className={styles.card}>
       <h3>User Profile</h3>
       {
-        //   isCardExpanded &&
         <>
           <p>{addressHex}</p>
           <h4>Completed Courses:</h4>
