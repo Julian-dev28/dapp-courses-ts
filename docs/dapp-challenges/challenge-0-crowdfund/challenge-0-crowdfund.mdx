@@ -11,7 +11,6 @@ import back100 from "../../../static/img/back100.png";
 import success from "../../../static/img/success.png";
 import backedResult from "../../../static/img/backedResult.png";
 import deployedDApp from "../../../static/img/deployedDApp.png";
-// import ButtonAction from "../../../components/ButtonAction.jsx";
 
 This challenge will walk you through the process of building a crowdfunding DApp on Stellar. You will learn how to deploy smart contracts to the Stellar network, and how to interact with them through a web frontend.
 
@@ -37,6 +36,12 @@ git clone https://github.com/stellar/soroban-example-dapp
 cd soroban-example-dapp
 ```
 
+Install the project dependencies:
+
+```sh
+npm install
+```
+
 Then, build the soroban-preview docker image:
 
 ```sh
@@ -50,46 +55,34 @@ Building the docker image lets you avoid installing the specific version of soro
 Open your Docker Desktop app and make sure it is running. Then run the following command to start the backend:
 
 ```sh
-./quickstart.sh futurenet
+./quickstart.sh standalone
 ```
 
 and wait for it to start.
-
-**Note:** This can take up to 5 minutes to start syncing. You can tell it is working by visiting http://localhost:8000/, and look at the `ingest_latest_ledger`, field. If it is `0`, the quickstart image is not ready yet.
 
 ## Checkpoint 2: 🎬 Deploy Smart Contracts
 
 Now that the backend environment is set up, we need to deploy our smart contracts to the Stellar network.
 
-Load the contracts and initialize them
+In another terminal, load the contracts and initialize them.
 
 Use your own local soroban-cli:
 
 ```sh
-./initialize.sh futurenet
+./initialize.sh standalone
 ```
 
 Or run it inside the soroban-preview docker container:
 
 ```sh
-docker exec soroban-preview ./initialize.sh futurenet
+docker exec soroban-preview ./initialize.sh standalone
 ```
 
 If the command ran successfully, it will return a Contract ID. Take note of this ID as you will need it in the next steps.
 
-You will need to add some Futurenet network lumens to your Freighter wallet. Visit [https://laboratory.stellar.org/#create-account](https://laboratory.stellar.org/#create-account), and follow the instructions to create your freighter account on Futurenet.
+## Checkpoint 4: 🤝 Connect the Frontend to the Backend
 
-## Checkpoint 3: 🎨 Building the Frontend
-
-Now we'll move to the frontend side of our DApp. We'll be using Next.js for this.
-
-### Install the frontend dependencies:
-
-```sh
-yarn install
-```
-
-### Start the development server:
+First, start the development server:
 
 ```sh
 yarn dev
@@ -97,27 +90,22 @@ yarn dev
 
 Now open your browser and visit http://localhost:3000. You should be able to see the frontend of your DApp.
 
-## Checkpoint 4: 🤝 Connect the Frontend to the Backend
-
 Now that we have the frontend running, it's time to connect it with our smart contracts.
-
-Connect your freighter wallet to the frontend and ensure that you have enough XLM to pay for the transaction fees. Reload your frontend. You should now be able to interact with the smart contracts through the DApp frontend.
-
-Then add the standalone network to your wallet and connect to it.
 
 Add the Futurenet custom network in Freighter (Note, the out-of-the-box "Future Net" network in Freighter will not work with a local quickstart container, so we need to add our own):
 
-- Name: `Futurenet RPC`
-- URL: `https://rpc-futurenet.stellar.org`
-- Passphrase: `Test SDF Future Network ; October 2022`
+- Name: `Standalone`
+- URL: `http://localhost:8000/soroban/rpc`
+- Passphrase: `Standalone Network ; February 2017`
 - Allow HTTP connection: `Enabled`
 - Switch to this network: `Enabled`
 
+Then, add some Standalone network lumens to your Freighter wallet by doing the following:
+
+- Copy the address for your freighter wallet.
+- Visit `http://localhost:8000/friendbot?addr=<your_address>`
+
 ## Checkpoint 6: 🏦 Mint Tokens for the Crowdfunding Campaign
-
-You will need to add some Futurenet network lumens to your Freighter wallet.
-
-Visit https://laboratory.stellar.org/#create-account, and follow the instructions to create your freighter account on Futurenet.
 
 Open the DApp frontend and click on the "Mint 100 EXT" button.
 
@@ -153,7 +141,44 @@ You should see an updated balance in and amount you have pledged in the pledge c
 
 Now that our DApp is fully functional locally, let's prepare it for deployment on futurenet.
 
-You can upload your app to a hosting platform of your choice. You could use platforms like Netlify, Vercel, or even an AWS S3 bucket.
+If you are running docker, now is a good time to stop the stellar and soroban preview containers.
+
+```sh
+docker stop stellar soroban-preview
+```
+
+First, edit the `initialize.sh` script to use the Soroban RPC endoint on futurenet:
+
+```sh
+# initialize.sh
+SOROBAN_RPC_URL="https://rpc-futurenet.stellar.org"
+```
+
+Then, run the following command to initialize the contracts on futurenet:
+
+```sh
+./initialize.sh futurenet
+```
+
+Then run the dev server again:
+
+```sh
+yarn dev
+```
+
+Now open your browser and visit http://localhost:3000. You should be able to see the frontend of your DApp.
+
+Next, add the [Soroban RPC](https://soroban.stellar.org/docs/getting-started/run-rpc) network in Freighter:
+
+- Name: `Soroban Futurenet`
+- URL: `https://rpc-futurenet.stellar.org`
+- Passphrase: `Test SDF Future Network ; October 2022`
+- Allow HTTP connection: `Enabled`
+- Switch to this network: `Enabled`
+
+Reload the page and you should see your pledge amount and balance updated.
+
+Now, you can upload your app to a hosting platform of your choice. You could use platforms like Netlify, Vercel, or even an AWS S3 bucket.
 
 For this example, we will need to edit the `package.json` file to edit the following lines:
 
@@ -182,7 +207,7 @@ Next we will use the Vercel-Cli to complete our deployment
 First install the Vercel cli:
 
 ```sh
-yarn global add vercel
+npm i global vercel
 ```
 
 Then run the following command to deploy your app:
@@ -191,35 +216,20 @@ Then run the following command to deploy your app:
 npx vercel
 ```
 
-Then follow the prompts to complete your deployment.
-
-> Note: This step can take a few minutes to complete.
-
-Once you reach the following prompt:
-
-```sh
-Auto-detected Project Settings (Next.js):
-- Build Command: next build
-- Development Command: next dev --port $PORT
-- Install Command: `yarn install`, `pnpm install`, or `npm install`
-- Output Directory: Next.js default
-? Want to modify these settings? [y/N] y
-```
-
-Choose `Y` and update the build command to `yarn build`
-
-Then continue through the prompts until you reach the completion prompt similar to the following:
+Then continue through the prompts(you will not need to modify any settings) until you reach the completion prompt similar to the following:
 
 ```sh
 Vercel CLI 30.1.1
-🔍  Inspect: https://vercel.com/julian-dev28/soroban-example-dapp/9Kb4JsJgQRRmi5VFkx6AvScWbBnU [3s]
-✅  Preview: https://soroban-example-dapp-julian-dev28.vercel.app [2m]
-📝  To deploy to production (soroban-example-dapp-iota.vercel.app), run `vercel --prod`
+🔗  Linked to julian-dev28/soroban-example-dapp (created .vercel)
+🔍  Inspect: https://vercel.com/julian-dev28/soroban-example-dapp/C1YZVQSqh6WcyR1uvxz8q2tW1tjD [2s]
+✅  Production: https://soroban-example-dapp-rho.vercel.app [42s]
 ```
 
 You can now visit the preview link to see your deployed app! 🎉
 
 <img src={deployedDApp} width="90%" />
+
+You will need to add some Futurenet network lumens to your Freighter wallet to interact with the deployed dApp. Visit [https://laboratory.stellar.org/#create-account](https://laboratory.stellar.org/#create-account), and follow the instructions to create your freighter account on Futurenet.
 
 ## Checkpoint 9: 💪 Flex!
 
