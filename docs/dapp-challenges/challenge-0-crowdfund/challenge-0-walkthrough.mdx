@@ -342,6 +342,21 @@ fn test_expired() {
 }
 ```
 
+`sale_still_running`: This test ensures that the recipient can't withdraw the funds while the crowdfunding campaign is still running.
+
+```rust
+#[test]
+#[should_panic(expected = "sale is still running")]
+fn sale_still_running() {
+    let setup = Setup::new();
+    setup
+        .crowdfund
+        .client()
+        .mock_all_auths()
+        .withdraw(&setup.recipient);
+}
+```
+
 `test_success`: This test checks the behavior when the crowdfunding campaign successfully reaches its target amount. It ensures that the funds can be withdrawn by the recipient after the deadline.
 
 ```rust
@@ -375,18 +390,29 @@ fn test_success() {
 }
 ```
 
-`sale_still_running`: This test ensures that the recipient can't withdraw the funds while the crowdfunding campaign is still running.
+`sale_not_running`: This test checks the behavior when a deposit attempt is made after the crowdfunding campaign has expired.
 
 ```rust
 #[test]
-#[should_panic(expected = "sale is still running")]
-fn sale_still_running() {
+#[should_panic(expected = "sale is not running")]
+fn sale_not_running() {
     let setup = Setup::new();
-    setup
-        .crowdfund
-        .client()
-        .mock_all_auths()
-        .withdraw(&setup.recipient);
+    advance_ledger(&setup.env, 10);
+
+    setup.crowdfund.client().deposit(&setup.user1, &1);
+}
+```
+
+`sale_expired_recipient_not_allowed`: This test ensures that the recipient can't withdraw the funds if the crowdfunding campaign has expired without reaching the target amount.
+
+```rust
+#[test]
+#[should_panic(expected = "sale expired, the recipient may not withdraw")]
+fn sale_expired_recipient_not_allowed() {
+    let setup = Setup::new();
+    advance_ledger(&setup.env, 10);
+
+    setup.crowdfund.client().withdraw(&setup.recipient);
 }
 ```
 
@@ -404,29 +430,113 @@ fn sale_successful_only_recipient() {
 }
 ```
 
-`sale_expired_recipient_not_allowed`: This test ensures that the recipient can't withdraw the funds if the crowdfunding campaign has expired without reaching the target amount.
+`sale_successful_non_recipient_still_denied_after_withdrawal`: This test ensures that users who aren't the recipient can't withdraw funds after the recipient has already done so.
 
 ```rust
 #[test]
-#[should_panic(expected = "sale expired, the recipient may not withdraw")]
-fn sale_expired_recipient_not_allowed() {
+#[should_panic(expected = "sale was successful, only the recipient may withdraw")]
+fn sale_successful_non_recipient_still_denied_after_withdrawal() {
     let setup = Setup::new();
+    setup
+        .crowdfund
+        .client()
+        .mock_all_auths()
+        .deposit(&setup.user2, &5);
     advance_ledger(&setup.env, 10);
 
-    setup.crowdfund.client().withdraw(&setup.recipient);
+    setup
+        .crowdfund
+        .client()
+        .mock_all_auths()
+        .withdraw(&setup.recipient);
+    setup
+        .crowdfund
+        .client()
+        .mock_all_auths()
+        .withdraw(&setup.user1);
 }
 ```
 
-`sale_not_running`: This test checks the behavior when a deposit attempt is made after the crowdfunding campaign has expired.
+`test_events`: This test ensures that the events are emitted correctly. It checks that the `pledged_amount_changed` event is emitted when a user makes a deposit and that the `target_reached` event is emitted when the target amount is reached.
 
 ```rust
 #[test]
-#[should_panic(expected = "sale is not running")]
-fn sale_not_running() {
+fn test_events() {
     let setup = Setup::new();
+    setup
+        .crowdfund
+        .client()
+        .mock_all_auths()
+        .deposit(&setup.user2, &5);
+    setup
+        .crowdfund
+        .client()
+        .mock_all_auths()
+        .deposit(&setup.user2, &3);
+
+    let mut crowd_fund_events: Vec<(Address, soroban_sdk::Vec<RawVal>, RawVal)> = vec![&setup.env];
+
+    // there are SAC events emitted also, filter those away, not asserting that aspect
+    setup
+        .env
+        .events()
+        .all()
+        .iter()
+        .map(core::result::Result::unwrap)
+        .filter(|event| event.0 == setup.crowdfund_id)
+        .for_each(|event| crowd_fund_events.push_back(event));
+
+    assert_eq!(
+        crowd_fund_events,
+        vec![
+            &setup.env,
+            (
+                setup.crowdfund_id.clone(),
+                (Symbol::new(&setup.env, "pledged_amount_changed"),).into_val(&setup.env),
+                10_i128.into_val(&setup.env)
+            ),
+            (
+                setup.crowdfund_id.clone(),
+                (Symbol::new(&setup.env, "pledged_amount_changed"),).into_val(&setup.env),
+                15_i128.into_val(&setup.env)
+            ),
+            (
+                // validate that this event only emitted once, ensuing deposits over the
+                // target before expiration, don't trigger this one again
+                setup.crowdfund_id.clone(),
+                (Symbol::new(&setup.env, "target_reached"),).into_val(&setup.env),
+                (15_i128, 15_i128).into_val(&setup.env)
+            ),
+            (
+                setup.crowdfund_id.clone(),
+                (Symbol::new(&setup.env, "pledged_amount_changed"),).into_val(&setup.env),
+                18_i128.into_val(&setup.env)
+            ),
+        ]
+    );
+}
+```
+
+`sale_successful_recipient_withdraws_only_once`: This test ensures that the recipient can only withdraw the funds once, even if the campaign is successful.
+
+```rust
+#[test]
+#[should_panic(expected = "sale was successful, recipient has withdrawn funds already")]
+fn sale_successful_recipient_withdraws_only_once() {
+    let setup = Setup::new();
+    setup.crowdfund.client().deposit(&setup.user2, &5);
     advance_ledger(&setup.env, 10);
 
-    setup.crowdfund.client().deposit(&setup.user1, &1);
+    setup
+        .crowdfund
+        .client()
+        .mock_all_auths()
+        .withdraw(&setup.recipient);
+    setup
+        .crowdfund
+        .client()
+        .mock_all_auths()
+        .withdraw(&setup.recipient);
 }
 ```
 
@@ -956,19 +1066,23 @@ The Dapp initialization process involves using Docker scripts to set up the nece
 set -e
 
 case "$1" in
-  standalone)
+standalone)
     echo "Using standalone network"
-    ARGS="--standalone --enable-core-artificially-accelerate-time-for-testing"
+    ARGS="--standalone"
     ;;
-  futurenet)
+futurenet)
     echo "Using Futurenet network"
     ARGS="--futurenet"
     ;;
-  *)
+*)
     echo "Usage: $0 standalone|futurenet"
     exit 1
     ;;
 esac
+
+# this is set to the quickstart `soroban-dev` image annointed as the release
+# for a given Soroban Release, it is captured on Soroban Releases - https://soroban.stellar.org/docs/reference/releases
+QUICKSTART_SOROBAN_DOCKER_SHA=stellar/quickstart:soroban-dev@sha256:57e8ab498bfa14c65595fbb01cb94b1cdee9637ef2e6634e59d54f6958c05bdb
 
 shift
 
@@ -976,20 +1090,18 @@ shift
 # Remember to do:
 # make build-docker
 
-# Docker network creation
 echo "Creating docker soroban network"
 (docker network inspect soroban-network -f '{{.Id}}' 2>/dev/null) \
   || docker network create soroban-network
 
-# Removing previous soroban-preview container
 echo "Searching for a previous soroban-preview docker container"
 containerID=$(docker ps --filter="name=soroban-preview" --all --quiet)
 if [[ ${containerID} ]]; then
-  echo "Start removing soroban-preview container."
-  docker rm --force soroban-preview
-  echo "Finished removing soroban-preview container."
+    echo "Start removing soroban-preview container."
+    docker rm --force soroban-preview
+    echo "Finished removing soroban-preview container."
 else
-  echo "No previous soroban-preview container was found"
+    echo "No previous soroban-preview container was found"
 fi
 
 currentDir=$(pwd)
@@ -1002,14 +1114,14 @@ docker run -dti \
   soroban-preview:9
 
 # Run the stellar quickstart image
+
 docker run --rm -ti \
   --name stellar \
   --network soroban-network \
   -p 8000:8000 \
-  stellar/quickstart:soroban-dev@sha256:a057ec6f06c6702c005693f8265ed1261e901b153a754e97cf18b0962257e872 \
+  "$QUICKSTART_SOROBAN_DOCKER_SHA" \
   $ARGS \
   --enable-soroban-rpc \
-  --protocol-version 20 \
   "$@" # Pass through args from the CLI
 ```
 
@@ -1038,7 +1150,7 @@ else
   SOROBAN_RPC_HOST="http://localhost:8000"
 fi
 
-SOROBAN_RPC_URL="$SOROBAN_RPC_HOST/soroban/rpc"
+SOROBAN_RPC_URL="https://rpc-futurenet.stellar.org"
 
 case "$1" in
 standalone)
@@ -1057,13 +1169,11 @@ futurenet)
   ;;
 esac
 
-#if !(soroban config network ls | grep "$NETWORK" 2>&1 >/dev/null); then
-# Always set a net configuration
-  echo Add the $NETWORK network to cli client
-  soroban config network add "$NETWORK" \
-    --rpc-url "$SOROBAN_RPC_URL" \
-    --network-passphrase "$SOROBAN_NETWORK_PASSPHRASE"
-#fi
+
+echo Add the $NETWORK network to cli client
+soroban config network add \
+  --rpc-url "$SOROBAN_RPC_URL" \
+  --network-passphrase "$SOROBAN_NETWORK_PASSPHRASE" "$NETWORK"
 
 if !(soroban config identity ls | grep token-admin 2>&1 >/dev/null); then
   echo Create the token-admin identity
@@ -1073,8 +1183,9 @@ TOKEN_ADMIN_SECRET="$(soroban config identity show token-admin)"
 TOKEN_ADMIN_ADDRESS="$(soroban config identity address token-admin)"
 
 # TODO: Remove this once we can use `soroban config identity` from webpack.
-echo "$TOKEN_ADMIN_SECRET" > .soroban/token_admin_secret
-echo "$TOKEN_ADMIN_ADDRESS" > .soroban/token_admin_address
+mkdir -p .soroban-example-dapp
+echo "$TOKEN_ADMIN_SECRET" > .soroban-example-dapp/token_admin_secret
+echo "$TOKEN_ADMIN_ADDRESS" > .soroban-example-dapp/token_admin_address
 
 # This will fail if the account already exists, but it'll still be fine.
 echo Fund token-admin account from friendbot
@@ -1083,11 +1194,15 @@ curl --silent -X POST "$FRIENDBOT_URL?addr=$TOKEN_ADMIN_ADDRESS" >/dev/null
 ARGS="--network $NETWORK --source token-admin"
 
 echo Wrap the Stellar asset
-mkdir -p .soroban
 TOKEN_ID=$(soroban lab token wrap $ARGS --asset "EXT:$TOKEN_ADMIN_ADDRESS")
 echo "Token wrapped succesfully with TOKEN_ID: $TOKEN_ID"
 
-echo -n "$TOKEN_ID" > .soroban/token_id
+# TODO - remove this workaround when
+# https://github.com/stellar/soroban-tools/issues/661 is resolved.
+TOKEN_ADDRESS="$(node ./address_workaround.js $TOKEN_ID)"
+echo "Token Address converted to StrKey contract address format:" $TOKEN_ADDRESS
+
+echo -n "$TOKEN_ID" > .soroban-example-dapp/token_id
 
 echo Build the crowdfund contract
 make build
@@ -1097,22 +1212,20 @@ CROWDFUND_ID="$(
   soroban contract deploy $ARGS \
     --wasm target/wasm32-unknown-unknown/release/soroban_crowdfund_contract.wasm
 )"
-echo "$CROWDFUND_ID" > .soroban/crowdfund_id
-
 echo "Contract deployed succesfully with ID: $CROWDFUND_ID"
+echo "$CROWDFUND_ID" > .soroban-example-dapp/crowdfund_id
 
 echo "Initialize the crowdfund contract"
 deadline="$(($(date +"%s") + 86400))"
 soroban contract invoke \
   $ARGS \
-  --wasm target/wasm32-unknown-unknown/release/soroban_crowdfund_contract.wasm \
   --id "$CROWDFUND_ID" \
   -- \
   initialize \
   --recipient "$TOKEN_ADMIN_ADDRESS" \
   --deadline "$deadline" \
   --target_amount "1000000000" \
-  --token "$TOKEN_ID"
+  --token "$TOKEN_ADDRESS"
 
 echo "Done"
 ```
