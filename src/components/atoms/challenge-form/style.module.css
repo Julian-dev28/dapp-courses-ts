@@ -35,6 +35,7 @@
   line-height: 22px;
   color: #ffffff;
   cursor: pointer;
+  align-self: baseline;
 }
 
 .input {
