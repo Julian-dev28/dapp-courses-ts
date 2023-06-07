@@ -11,9 +11,21 @@
 
 .container {
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
   gap: 20px; /* Optional: Adds some space between the cards */
-  width: auto;
+}
+
+.outerContainer {
+  display: flex;
+  justify-content: flex-start;
+  gap: 20px;
+}
+
+.innerContainer {
+  display: flex;
+  justify-content: center;
+  flex-grow: 1;  /* takes up remaining space */
+  gap: 20px;
 }
 
 .card h3 {

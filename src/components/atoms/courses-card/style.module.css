@@ -13,7 +13,6 @@
   display: flex;
   justify-content: flex-start;
   gap: 20px; /* Optional: Adds some space between the cards */
-  width: auto;
 }
 
 .card h3 {
