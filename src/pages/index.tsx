@@ -3,9 +3,6 @@ import Head from "@docusaurus/Head";
 import Layout from "@theme/Layout";
 import "./index.scss";
 
-import { useSorobanReact } from "@soroban-react/core";
-import styles from "../components/atoms/connect-button/style.module.css";
-
 const Landing: React.FC = () => {
   return (
     <Layout>
