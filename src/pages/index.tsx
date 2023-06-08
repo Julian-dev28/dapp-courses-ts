@@ -124,8 +124,10 @@ const Hero: React.FC = () => (
       </div>
       <div className="Hero__right">
         <p>
-          Jumpstart your Dapp development with Soroban. Soroban is a smart
-          contracts platform that is designed with purpose and built to perform.
+          Jumpstart your Dapp development with Soroban, a smart contracts
+          platform that is designed with purpose and built to perform.
+          <br />
+          <br />
           Futurenet is Live! Start experimenting now!
         </p>
 
