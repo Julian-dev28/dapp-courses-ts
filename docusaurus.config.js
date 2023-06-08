@@ -6,16 +6,16 @@ const darkCodeTheme = require("prism-react-renderer/themes/dracula");
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: "Soroban - Smart Contracts Platform for Developers",
+  title: "Live Laugh Soroban",
   tagline:
-    "Soroban is a smart contracts platform that is designed with purpose and built to perform. The Futurenet has launched! Start experimenting now!",
+    "Jumpstart your Dapp development with Soroban, a smart contracts platform that is designed with purpose and built to perform.",
   url: "https://soroban.stellar.org", // Your website URL
   baseUrl: "/",
   onBrokenLinks: "throw",
   onBrokenMarkdownLinks: "throw",
   favicon: "img/favicon.ico",
   organizationName: "stellar", // Usually your GitHub org/user name.
-  projectName: "soroban-docs", // Usually your repo name.
+  projectName: "live-laugh-soroban", // Usually your repo name.
   i18n: {
     defaultLocale: "en",
     locales: ["en"],
@@ -89,8 +89,8 @@ const config = {
             position: "right",
           },
           {
-            href: "https://github.com/stellar/soroban-docs",
-            label: "GitHub",
+            href: "https://soroban.stellar.org/docs",
+            label: "Docs",
             position: "right",
           },
           {
