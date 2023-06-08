@@ -66,42 +66,42 @@ const GettingStarted = () => (
         <GettingStartedCard
           title="Build a Crowdfunding Dapp"
           subtitle="Create a decentralized application for crowdfunding projects."
-          href="/docs/category/dapp-challenges"
+          href="/docs/category/crowdfund-challenge"
           index={undefined}
         />
 
         <GettingStartedCard
-          title="Build an AMM"
+          title="Coming Soon: Build an AMM"
           subtitle="Develop an Automated Market Maker for decentralized exchanges."
-          href="/docs/category/dapp-challenges"
+          href={undefined}
           index={undefined}
         />
 
         <GettingStartedCard
-          title="Build an Oracle"
+          title="Coming Soon: Build an Oracle"
           subtitle="Implement an Oracle service for accessing external data on the blockchain."
-          href="/docs/category/dapp-challenges"
+          href={undefined}
           index={undefined}
         />
 
         <GettingStartedCard
-          title="Build an NFT Gallery"
+          title="Coming Soon: Build an NFT Gallery"
           subtitle="Construct a platform to showcase and trade Non-Fungible Tokens."
-          href="/docs/category/dapp-challenges"
+          href={undefined}
           index={undefined}
         />
 
         <GettingStartedCard
-          title="Build a Multisig Wallet"
+          title="Coming Soon: Build a Multisig Wallet"
           subtitle="Create a wallet that requires multiple signatures for transactions."
-          href="/docs/category/dapp-challenges"
+          href={undefined}
           index={undefined}
         />
 
         <GettingStartedCard
-          title="Build a Smart Wallet"
+          title="Coming Soon: Build a Smart Wallet"
           subtitle="Develop a wallet with programmable and automated functionality."
-          href="/docs/category/dapp-challenges"
+          href={undefined}
           index={undefined}
         />
       </div>
