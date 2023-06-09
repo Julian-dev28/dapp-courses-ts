@@ -211,6 +211,7 @@ a.hp-link {
 
   &__right {
     max-width: 25.125rem;
+
     margin-top: 3rem;
 
     p {
@@ -390,8 +391,8 @@ a.hp-link {
 .GettingStarted,
 a.GettingStarted {
   color: var(--primary-black);
-  background-color: var(--primary-white);
-  padding: 8.75rem 2rem;
+  // background-color: var(--primary-white);
+  padding: 5.75rem 2rem;
 
   &__title {
     font-weight: 500;
@@ -459,7 +460,7 @@ a.GettingStartedCard {
   }
 
   &:hover {
-    background-color: lightblue;
+    background-color: rgb(6, 127, 249);
   }
 
   &:hover &__icon {

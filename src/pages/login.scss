@@ -1,17 +1,18 @@
 .login {
   .hp--hero {
     position: relative;
-    background-image: url("../../static/img/flow.gif");
+    background-image: url("../../static/img/wav.gif");
     background-repeat: repeat-x;
     background-position: center;
-    background-size: cover;
+
+    background-size: contain;
+
     padding-bottom: 40px;
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
 
-    // Rest of your styles...
+    flex-direction: column;
+    justify-content: left;
+    align-items: center;
   }
 
   // Rest of your styles...

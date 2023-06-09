@@ -7,6 +7,17 @@
   transition: 0.3s;
   background: white;
   margin-top: 50px;
+  transform: translateY(0);
+  transition: transform 0.3s;
+  background-size: cover;
+
+  background-image: url("/img/arm.gif");
+  background-position-x: 100%;
+  background-position-y: 5%;
+  background-repeat: no-repeat;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
 }
 
 .container {
@@ -18,12 +29,15 @@
 .card h3 {
   color: #333;
   font-size: 24px;
+  font-family: "Courier New", Courier, monospace;
 }
 
 .card p,
 .card h4,
 .card ul {
-  color: #666;
+  color: #000000;
+  font-weight: bold;
+  font-family: "Courier New", Courier, monospace;
 }
 
 .card ul {
@@ -37,6 +51,7 @@
 
 .card:hover {
   box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+  transform: translateY(-10px);
 }
 
 .button {
