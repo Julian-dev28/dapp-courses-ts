@@ -4,6 +4,7 @@ import Layout from "@theme/Layout";
 import clsx from "clsx";
 import { ConnectButton } from "../../src/components/atoms/connect-button";
 import { CompletedCoursesCard } from "../components/atoms/courses-card";
+import { ImageHolder } from "../components/atoms/course-images";
 import { UserCard } from "../components/atoms/user-card";
 import { ChallengeCard } from "../components/atoms/start-challenge-card";
 import { CardContainer } from "../components/molecules/card-container";
@@ -12,6 +13,7 @@ import { SorobanEventsProvider } from "@soroban-react/events";
 import { futurenet, sandbox, standalone } from "@soroban-react/chains";
 import { freighter } from "@soroban-react/freighter";
 import { ChainMetadata, Connector } from "@soroban-react/types";
+import "./login.scss"; // Import the SCSS file
 
 const chains: ChainMetadata[] = [sandbox, standalone, futurenet];
 const connectors: Connector[] = [freighter()];
@@ -52,8 +54,9 @@ function LoginComponent() {
         {address && <UserCard addressHex={address} />}
         {address && <CompletedCoursesCard addressHex={address} />}
         {address && <ChallengeCard />}
-{/* 
+        {/* 
         <CardContainer addressHex={address} /> */}
+        {/* <img src="/img/synthcity.jpeg" alt="arrow" /> */}
       </div>
     </main>
   );

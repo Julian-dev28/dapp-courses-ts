@@ -135,6 +135,9 @@ a.hp-link {
   padding: 4rem 2rem 8rem 2rem;
   min-height: 53.125rem;
   overflow: hidden;
+  background-image: url("/img/slowride.gif");
+  background-size: cover;
+  background-blend-mode: color;
 
   &__wrapper {
     color: var(--primary-white);
@@ -152,6 +155,8 @@ a.hp-link {
   &__img4,
   &__img5 {
     position: absolute;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
   }
 
   &__img1 {
@@ -175,11 +180,19 @@ a.hp-link {
     bottom: 90%;
     transform: rotate(-45.29deg) scaleX(-1);
   }
-
   &__img5 {
     right: -64px;
     bottom: -208px;
     transform: rotate(-62.29deg);
+    animation-name: moveImage5;
+  }
+  @keyframes moveImage5 {
+    0% {
+      transform: translateX(0) rotate(-62.29deg);
+    }
+    100% {
+      transform: translateX(1000px) rotate(-62.29deg); /* Adjust the distance and direction as needed */
+    }
   }
 
   &__logo {

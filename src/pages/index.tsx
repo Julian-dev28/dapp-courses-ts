@@ -141,11 +141,11 @@ const Hero: React.FC = () => (
         </div>
       </div>
     </div>
-    <img className="Hero__img1" src="/img/landing/image-5.svg" alt="1" />
-    <img className="Hero__img2" src="/img/landing/image-5.svg" alt="2" />
-    <img className="Hero__img3" src="/img/landing/image-3.svg" alt="3" />
+    {/* <img className="Hero__img1" src="/img/landing/image-5.svg" alt="1" /> */}
+    {/* <img className="Hero__img2" src="/img/landing/image-5.svg" alt="2" /> */}
+    {/* <img className="Hero__img3" src="/img/landing/image-3.svg" alt="3" /> */}
 
-    <img className="Hero__img5" src="/img/landing/image-5.svg" alt="5" />
+    {/* <img className="Hero__img5" src="/img/landing/image-5.svg" alt="5" /> */}
   </div>
 );
 
