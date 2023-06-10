@@ -542,7 +542,7 @@ fn sale_successful_recipient_withdraws_only_once() {
 
 ## Understanding the Frontend: React
 
-This section elaborates on how our frontend can interact with our crowdfund contract, access chain data, and connect to our freighter wallet. We will accomplish this by utilizing libraries provided by the [`@soroban-react`](https://soroban-react.gitbook.io/index/), a simple, powerful framework for building modern Soroban dApps using React created by a member of the Soroban community.
+This section elaborates on how our frontend can interact with our crowdfund contract, access chain data, and connect to our freighter wallet. We will accomplish this by utilizing libraries provided by [`@soroban-react`](https://soroban-react.gitbook.io/index/), a simple, powerful framework for building modern Soroban dApps using React created by a member of the Soroban community.
 
 Below is a list of the libraries used throughout the frontend code and their respective imports:
 
@@ -757,6 +757,133 @@ This `ConnectButton` component uses the `useSorobanReact` hook from the Soroban 
 `ConnectButtonProps` passes in a `label` prop, which is the text that will be displayed on the button, and an optional `isHigher` prop that modifies the button's height.
 
 When the `ConnectButton` is clicked, the `openConnectModal` function is invoked. This function asynchronously calls the `connect` method provided by `useSorobanReact`, initiating the wallet connection process.
+
+### Hooks and Methods
+
+The `Pledge` component uses various hooks and methods to interact with Soroban smart contracts, extract data, update UI states, and handle events.
+
+Lets take a look at `components/organisms/pledge/index.tsx`
+
+#### Loading Contract Values
+
+```tsx
+const useLoadToken = (): any => {
+  return {
+    balance: useContractValue({
+      contractId: Constants.TokenId,
+      method: 'balance',
+      params: [SorobanClient.Address.contract(Buffer.from(Constants.CrowdfundId, 'hex')).toScVal()],
+      sorobanContext
+    }),
+...
+let token = useLoadToken()
+  };
+}
+```
+
+The `useLoadToken` hook is used to fetch token properties such as balance, decimals, name, and symbol. These properties are fetched using the `useContractValue` hook, which makes calls to the contract.
+
+#### Converting Contract Values to JS Types
+
+```tsx
+const tokenDecimals =
+token.decimals.result && (token.decimals.result?.u32() ?? 7);
+...
+const targetAmount = convert.scvalToBigNumber(targetAmountXdr.result);
+```
+
+The contract values (ScVals) are converted to standard JavaScript types for use within the React component. This conversion is performed by helper functions such as `convert.scvalToBigNumber`.
+
+#### Updating UI with useEffect Hook
+
+React's `useEffect` hook is an integral part of this component. It's responsible for updating the UI based on changes to the contract values. Let's take a closer look:
+
+```tsx
+React.useEffect(() => {
+  // hook is providing data, let it update the UI model,
+  // events will update these later also
+  const tokenBalance = convert.scvalToBigNumber(token.balance.result);
+  const targetAmount = convert.scvalToBigNumber(targetAmountXdr.result);
+  setTokenBalance(tokenBalance);
+  setTargetReached(targetAmount.gt(0) && tokenBalance.gte(targetAmount));
+}, [token.balance, targetAmountXdr]);
+```
+
+`useEffect` here accepts two arguments:
+
+- A function which contains side effects. Here, it's updating our state variables: `tokenBalance` and `targetReached`.
+- An array of dependencies. If any dependency changes, the function (first argument) re-executes.
+
+The dependencies are `token.balance` and `targetAmountXdr`, implying the function re-runs if the token balance or target amount change.
+
+Within the function, we convert `token.balance.result` and `targetAmountXdr`.result from `ScVal` format (Soroban's data type) to `BigNumber` using `convert.scvalToBigNumber. BigNumber`.
+
+After the conversion, we use `setTokenBalance` and `setTargetReached` to update our state variables. `setTargetReached` checks if the target amount is greater than zero and the token balance meets or exceeds this target.
+
+The result? A UI that instantly reflects changes to the token balance or target amount.
+
+#### Checking Loading State
+
+```tsx
+const isLoading = (): boolean | undefined => {
+...
+}
+```
+
+The `isLoading` function checks the loading status of various contract properties. If any of these properties are still being fetched, the function returns true.
+
+#### Event Subscriptions
+
+The component sets up two event subscriptions to handle real-time updates from the contract. These subscriptions are for the 'pledged_amount_changed' and 'target_reached' events.
+
+The subscription is created using the `useRef` hook to create a mutable object that persists across re-renders without causing additional renders.
+
+Each subscription is an object that specifies the contract ID, the events to listen for, a callback function that handles the event, and a unique ID.
+
+The callback functions use the event data to update the component's state using the `setTokenBalance` and `setTargetReached` state setters.
+
+In the case of the 'pledged_amount_changed' event, the balance from the event data is converted to a `BigNumber` and then set as the new token balance.
+
+For the 'target_reached' event, the `setTargetReached` function is called with `true` to indicate that the crowdfunding target has been reached.
+
+These subscriptions are set up in a `useEffect` hook that is run when the component mounts. The `sorobanEventsContext.subscribe` function is used to subscribe to the events, and it returns an ID for the subscription.
+
+The `useEffect` hook also returns a cleanup function that is run when the component unmounts. This function calls `sorobanEventsContext.unsubscribe` with the subscription IDs to stop listening to the events.
+
+```tsx
+const crowdfundPledgedEventSubscription = useRef({
+  contractId: Constants.CrowdfundId,
+  topics: ["pledged_amount_changed"],
+  cb: (event: SorobanClient.SorobanRpc.EventResponse): void => {
+    let eventTokenBalance = xdr.ScVal.fromXDR(event.value.xdr, "base64");
+    setTokenBalance(convert.scvalToBigNumber(eventTokenBalance));
+  },
+  id: Math.random(),
+} as EventSubscription);
+
+const crowdfundTargetReachedSubscription = useRef({
+  contractId: Constants.CrowdfundId,
+  topics: ["target_reached"],
+  cb: (event: SorobanClient.SorobanRpc.EventResponse): void => {
+    setTargetReached(true);
+  },
+  id: Math.random(),
+} as EventSubscription);
+
+React.useEffect(() => {
+  const pledgedSubId = sorobanEventsContext.subscribe(
+    crowdfundPledgedEventSubscription.current
+  );
+  const reachedSubId = sorobanEventsContext.subscribe(
+    crowdfundTargetReachedSubscription.current
+  );
+
+  return () => {
+    sorobanEventsContext.unsubscribe(pledgedSubId);
+    sorobanEventsContext.unsubscribe(reachedSubId);
+  };
+}, [sorobanEventsContext]);
+```
 
 ### Making Contributions
 
