@@ -542,7 +542,7 @@ fn sale_successful_recipient_withdraws_only_once() {
 
 ## Understanding the Frontend: React
 
-This section elaborates on how our frontend can interact with our crowdfund contract, access chain data, and connect to our freighter wallet. We will accomplish this by utilizing libraries provided by the [`@soroban-react`](https://soroban-react.gitbook.io/index/), a simple, powerful framework for building modern Soroban dApps using React created by a member of the Soroban community.
+This section elaborates on how our frontend can interact with our crowdfund contract, access chain data, and connect to our freighter wallet. We will accomplish this by utilizing libraries provided by [`@soroban-react`](https://soroban-react.gitbook.io/index/), a simple, powerful framework for building modern Soroban dApps using React created by a member of the Soroban community.
 
 Below is a list of the libraries used throughout the frontend code and their respective imports:
 
@@ -757,6 +757,78 @@ This `ConnectButton` component uses the `useSorobanReact` hook from the Soroban 
 `ConnectButtonProps` passes in a `label` prop, which is the text that will be displayed on the button, and an optional `isHigher` prop that modifies the button's height.
 
 When the `ConnectButton` is clicked, the `openConnectModal` function is invoked. This function asynchronously calls the `connect` method provided by `useSorobanReact`, initiating the wallet connection process.
+
+### Hooks and Methods
+
+The `Pledge` component uses various hooks and methods to interact with Soroban smart contracts, extract data, update UI states, and handle events.
+
+#### Loading Contract Values
+
+```tsx
+const useLoadToken = (): any => {
+  return {
+    balance: useContractValue({
+      contractId: Constants.TokenId,
+      method: 'balance',
+      params: [SorobanClient.Address.contract(Buffer.from(Constants.CrowdfundId, 'hex')).toScVal()],
+      sorobanContext
+    }),
+...
+let token = useLoadToken()
+  };
+}
+```
+
+The `useLoadToken` hook is used to fetch token properties such as balance, decimals, name, and symbol. These properties are fetched using the `useContractValue` hook, which makes calls to the contract.
+
+#### Converting Contract Values to JS Types
+
+```tsx
+const tokenDecimals =
+token.decimals.result && (token.decimals.result?.u32() ?? 7);
+...
+const targetAmount = convert.scvalToBigNumber(targetAmountXdr.result);
+```
+
+The contract values (ScVals) are converted to standard JavaScript types for use within the React component. This conversion is performed by helper functions such as `convert.scvalToBigNumber`.
+
+#### Updating UI with useEffect Hook
+
+```tsx
+React.useEffect(() => {
+...
+}, [token.balance, targetAmountXdr]);
+```
+
+The `useEffect` hook updates the UI based on the contract values. This hook also checks if the target amount has been reached by comparing it with the token balance.
+
+#### Checking Loading State
+
+```tsx
+const isLoading = (): boolean | undefined => {
+...
+}
+```
+
+The `isLoading` function checks the loading status of various contract properties. If any of these properties are still being fetched, the function returns true.
+
+#### Event Subscriptions
+
+```tsx
+const crowdfundPledgedEventSubscription = useRef({
+...
+});
+
+const crowdfundTargetReachedSubscription = useRef({
+...
+});
+
+React.useEffect(() => {
+...
+}, [sorobanEventsContext]);
+```
+
+The component subscribes to the 'pledged_amount_changed' and 'target_reached' events using the `sorobanEventsContext.subscribe` function. When these events occur, the UI state is updated accordingly.
 
 ### Making Contributions
 
