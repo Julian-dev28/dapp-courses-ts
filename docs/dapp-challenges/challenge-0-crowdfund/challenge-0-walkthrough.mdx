@@ -762,6 +762,8 @@ When the `ConnectButton` is clicked, the `openConnectModal` function is invoked.
 
 The `Pledge` component uses various hooks and methods to interact with Soroban smart contracts, extract data, update UI states, and handle events.
 
+Lets take a look at `components/organisms/pledge/index.tsx`
+
 #### Loading Contract Values
 
 ```tsx
@@ -821,6 +823,16 @@ After the conversion, we use `setTokenBalance` and `setTargetReached` to update 
 The result? A UI that instantly reflects changes to the token balance or target amount.
 
 #### Checking Loading State
+
+```tsx
+const isLoading = (): boolean | undefined => {
+...
+}
+```
+
+The `isLoading` function checks the loading status of various contract properties. If any of these properties are still being fetched, the function returns true.
+
+#### Event Subscriptions
 
 The component sets up two event subscriptions to handle real-time updates from the contract. These subscriptions are for the 'pledged_amount_changed' and 'target_reached' events.
 
