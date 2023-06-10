@@ -1,0 +1,108 @@
+---
+sidebar_position: 0
+title: Payment Dapp Challenge
+description: Take on the challenge and master the Soroban Payment Dapp!
+---
+
+import { ChallengeForm } from "../../../src/components/atoms/challenge-form";
+
+## Soroban React Payment Challenge
+
+This challenge will guide you through the process of setting up, customizing, and deploying the Soroban Payment DApp, a blockchain-powered payment application designed to work with the Freighter wallet.
+
+## Checkpoint 0: 📦 Install Dependencies
+
+Before you begin, ensure you have the following installed on your system:
+
+- `Node` (>=16.14.0 < 17.0.0): [Download Node](https://nodejs.org/en/download/)
+- `Yarn` (v1.22.5 or newer): [Install Yarn](https://yarnpkg.com/)
+- `Freighter Wallet`: [Freighter Wallet](https://freighter.app/)
+
+## Checkpoint 1: 🚀 Launch Local Backend
+
+Clone and set up the Payment DApp repository:
+
+```bash
+git clone https://github.com/stellar/soroban-react-payment.git
+cd soroban-react-payment
+yarn
+```
+
+Ensure your Freighter wallet is connected to the DApp and that the experimental mode is enabled in Freighter settings: `(Settings(⚙️)>Preferences>ENABLE EXPERIMENTAL MODE).`
+
+## Checkpoint 2: 🎬 Deploy Smart Contracts
+
+Using the Soroban token's contract interface, construct transactions that invoke the transfer method to enable the transfer of Soroban tokens from one address to another.
+
+## Checkpoint 4: 🤝 Connect the Frontend to the Backend
+
+Make sure that the frontend of the Payment DApp successfully communicates with the backend, allowing transactions to be created, signed, and submitted to the network.
+
+## Checkpoint 6: 🏦 Interaction 1 (Test Basic Functionality)
+
+Perform a series of tests to ensure that the application's features work as expected. You could create transactions, sign them, submit them to the network, and check the updated token balance.
+
+## Checkpoint 7: 💰 Interaction 2 (Customize Some Code)
+
+Make some modifications to the Payment DApp code to alter its functionality or appearance. This could be a simple UI change or a more complex modification of the application's functionality.
+
+## Checkpoint 8: 🚢 Ship it! 🚁
+
+You can upload your app to a hosting platform of your choice. You could use platforms like Netlify, Vercel, or even an AWS S3 bucket.
+
+For this example, we will use the Vercel cli to complete our deployment
+
+> Note: If you dont already have a [Vercel account], you will need to create one and link it to your github account.
+
+[Vercel account]: https://vercel.com/login
+
+First install the Vercel cli:
+
+```sh
+npm i global vercel
+```
+
+Then run the following command to deploy your app:
+
+```sh
+npx vercel
+```
+
+Then continue through the prompts(you will not need to modify any settings) until you reach the completion prompt similar to the following:
+
+```sh
+Vercel CLI 30.1.1
+🔗  Linked to julian-dev28/soroban-example-dapp (created .vercel)
+🔍  Inspect: https://vercel.com/julian-dev28/soroban-example-dapp/C1YZVQSqh6WcyR1uvxz8q2tW1tjD [2s]
+✅  Production: https://soroban-example-dapp-rho.vercel.app [42s]
+```
+
+You can now visit the preview link to see your deployed app! 🎉
+
+You will need to add some Futurenet network lumens to your Freighter wallet to interact with the deployed dApp. Visit [https://laboratory.stellar.org/#create-account](https://laboratory.stellar.org/#create-account), and follow the instructions to create your freighter account on Futurenet.
+
+## Checkpoint 9: ✅ Complete the Challenge!
+
+Submit your public url to the challenge form.
+
+<ChallengeForm />
+
+## Checkpoint 10: 💪 Share Your Accomplishment with the Community
+
+Don't forget to share your work with the community. Let others see what you've accomplished, receive feedback, and inspire others!
+
+⚔️ Side Quests
+If you're up for an extra challenge, consider exploring more advanced features of the Soroban Payment DApp, the Freighter wallet, or the Stellar network itself.
+
+📚 User Workflows Checklist
+To ensure that you've covered all the key user actions during the challenge, follow this checklist:
+
+- Cloning the repository
+- Installing dependencies
+- Launching the local backend
+- Deploying smart contracts
+- Connecting the frontend to the backend
+- Interacting with the application
+- Customizing the code
+- Deploying to testnet
+- Submitting your public key and URL

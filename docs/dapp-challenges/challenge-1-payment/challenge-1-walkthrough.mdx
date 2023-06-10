@@ -1,0 +1,53 @@
+---
+sidebar_position: 1
+title: Payment Dapp Walkthrough
+description: Step through the code behind the Payment Dapp.
+---
+
+# Example Guide: Building a Dapp
+
+This guide will take you through the process of building a Dapp on the Stellar network using the given React code, which provides an interface for making payments in a step-by-step process.
+
+## Prerequisites
+
+The key skills and knowledge you'll need:
+
+- Basic understanding of JavaScript (ES6) and TypeScript.
+- Familiarity with React and how its components work.
+- A basic understanding of the Stellar network and its operations.
+- Experience with asynchronous programming in JavaScript (Promises, async/await).
+
+## Setup
+
+- Make sure you have Node.js and npm installed on your machine.
+- You'll also need to set up a development environment for Stellar, like the Futurenet test network.
+
+## Understanding the Development Environment
+
+In this code, the application is being built to run on Futurenet, which is a part of the Stellar network. Futurenet is a test network that allows developers to experiment without the risk of losing actual money.
+
+## Understanding the Frontend Code
+
+This codebase primarily uses React and its hooks to create an interface for making payments. Some components are imported from Stellar's design system and some are created specifically for this Dapp.
+
+## Main Component
+
+The main component here is `SendPayment`, which holds the logic for the entire payment process. It contains multiple states to keep track of the payment details, such as the network details, token details, amount to send, destination, etc.
+
+## Secondary Component
+
+The secondary components in this code are the different steps of the payment process, like `ConnectWallet`, `PaymentDest`, `SendAmount`, `Fee`, `ConfirmPayment`, `SubmitPayment`, and `TxResult`. Each of these components represents a step in the payment process and are rendered based on the current step.
+
+## Processing Transactions
+
+The transaction process starts with connecting a wallet using `ConnectWallet` component. Once the wallet is connected, the user can specify the destination, the amount, the token to use, and the fee. Before submitting the transaction, it's confirmed using `ConfirmPayment` component, and then submitted using `SubmitPayment` component. The result of the transaction is displayed by `TxResult` component.
+
+## Understanding Dapp Initialization
+
+The initialization of the Dapp starts within the `SendPayment` component. It first checks if the Freighter wallet extension is connected. If connected, it will fetch the public key and network details from the wallet. These details are then used in subsequent steps to fetch token details and to build and submit the transaction.
+
+## Running the Example Dapp
+
+To run the Dapp, use `npm start` or `yarn start` command. It will run the app in development mode. Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+
+Remember to keep testing the functionality of your Dapp at each step of the development process. The more you test, the more reliable your Dapp will be.
