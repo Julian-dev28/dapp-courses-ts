@@ -66,7 +66,7 @@ const GettingStarted = () => (
         <GettingStartedCard
           title="Build a Crowdfunding Dapp"
           subtitle="Create a decentralized application for crowdfunding projects."
-          href="/docs/category/crowdfund-challenge"
+          href="/docs/category/crowdfund"
           index={undefined}
         />
 
