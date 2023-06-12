@@ -18,7 +18,7 @@ Before you begin, ensure you have the following installed on your system:
 - `Yarn` (v1.22.5 or newer): [Install Yarn](https://yarnpkg.com/)
 - `Freighter Wallet`: [Freighter Wallet](https://freighter.app/)
 
-## Checkpoint 1: 🚀 Launch Local Backend
+## Checkpoint 1: 🚀 Clone the Repository
 
 Clone and set up the Payment DApp repository:
 
@@ -32,7 +32,56 @@ Ensure your Freighter wallet is connected to the DApp and that the experimental 
 
 ## Checkpoint 2: 🎬 Deploy Smart Contracts
 
-Using the Soroban token's contract interface, construct transactions that invoke the transfer method to enable the transfer of Soroban tokens from one address to another.
+For this step we will need to clone and deploy the Soroban token smart contracts. The Soroban token is a custom token that will be used to facilitate payments in the Payment DApp.
+
+In a new terminal window, follow the steps below to build and deploy the smart contracts:
+
+```bash
+git clone https://github.com/stellar/soroban-examples.git
+cd soroban-examples
+cd token
+make
+```
+
+This will build the smart contracts and put them in the `token/target/wasm32-unknown-unknown/release` directory.
+
+Next, we will need to deploy the smart contracts to the testnet. To do this follow the steps below:
+
+```bash
+soroban contract deploy \
+    --wasm target/wasm32-unknown-unknown/release/soroban_token_contract.wasm \
+    --source <ADMIN_ACCOUNT_SECRET_KEY>
+    --rpc-url https://rpc-futurenet.stellar.org:443 \
+    --network-passphrase 'Test SDF Future Network ; October 2022'
+```
+
+This will return a contract id that we will need to use in the next step.
+
+```bash
+soroban contract invoke \
+    --id <TOKEN_CONTRACT_ID> \
+    --source-account
+    --rpc-url https://rpc-futurenet.stellar.org:443 \
+    --network-passphrase 'Test SDF Future Network ; October 2022' \
+    -- initialize \
+    --admin <ADMIN_PUBLIC_KEY> \
+    --decimal 7 \
+    --name '44656d6f20546f6b656e' \
+    --symbol '"4454"'
+```
+
+Minting some of the token to a test account that you will use in the dapp
+
+```bash
+soroban contract invoke \
+    --id c069d458f7ce21b7d62f11d0795555f85f74e754235d5187182c7ef55b57ae7e \
+    --source-account <ADMIN_ACCOUNT_SECRET_KEY> \
+    --rpc-url https://rpc-futurenet.stellar.org:443 \
+    --network-passphrase 'Test SDF Future Network ; October 2022' \
+    -- mint \
+    --to <USER_PUBLIC_KEY> \
+    --amount 1000000000
+```
 
 ## Checkpoint 4: 🤝 Connect the Frontend to the Backend
 
