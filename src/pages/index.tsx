@@ -71,6 +71,13 @@ const GettingStarted = () => (
         />
 
         <GettingStartedCard
+          title="Build a Payment Dapp"
+          subtitle="Create a decentralized application for sending Soroban Tokens."
+          href="/docs/category/payment"
+          index={undefined}
+        />
+
+        <GettingStartedCard
           title="Coming Soon: Build an AMM"
           subtitle="Develop an Automated Market Maker for decentralized exchanges."
           href={undefined}
