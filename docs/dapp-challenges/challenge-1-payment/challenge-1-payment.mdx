@@ -45,7 +45,7 @@ make
 
 This will build the smart contracts and put them in the `token/target/wasm32-unknown-unknown/release` directory.
 
-Next, we will need to deploy the smart contracts to the testnet. To do this follow the steps below:
+Next, we will need to deploy the smart contracts to Futurenet. To do this, open a terminal in the `soroban-examples/token` directory and follow the steps below:
 
 ```bash
 soroban contract deploy \
@@ -60,7 +60,7 @@ This will return a contract id that we will need to use in the next step.
 ```bash
 soroban contract invoke \
     --id <TOKEN_CONTRACT_ID> \
-    --source-account
+    --source-account <ADMIN_ACCOUNT_SECRET_KEY> \
     --rpc-url https://rpc-futurenet.stellar.org:443 \
     --network-passphrase 'Test SDF Future Network ; October 2022' \
     -- initialize \
@@ -70,7 +70,7 @@ soroban contract invoke \
     --symbol '"4454"'
 ```
 
-Minting some of the token to a test account that you will use in the dapp
+Next we will need to mint some tokens to our sender's account. To do this, run the following command:
 
 ```bash
 soroban contract invoke \
@@ -83,19 +83,40 @@ soroban contract invoke \
     --amount 1000000000
 ```
 
-## Checkpoint 4: 🤝 Connect the Frontend to the Backend
+## Checkpoint 3: 🖥️ Launch the Frontend
 
 Make sure that the frontend of the Payment DApp successfully communicates with the backend, allowing transactions to be created, signed, and submitted to the network.
 
-## Checkpoint 6: 🏦 Interaction 1 (Test Basic Functionality)
+Open a terminal in the `soroban-react-payment` directory and run the following command:
+
+```bash
+yarn start
+```
+
+You should see the following output:
+
+```bash
+$ webpack-dev-server --config config/webpack.dev.js
+<i> [webpack-dev-server] Project is running at:
+<i> [webpack-dev-server] Loopback: http://localhost:9000/
+...
+```
+
+Now open your browser and navigate to `http://localhost:9000/`. You should see the Payment DApp running in your browser.
+
+## Checkpoint 4: 📡 Add the Token to Freighter
+
+Add the Soroban token to your Freighter wallet. To do this, open your Freighter wallet and click on the `Manage Assets` button at the bottom of the screen. Then click on the `Add Soroban` button and enter the token ID that was returned when you deployed the smart contracts.
+
+## Checkpoint 5: 🏦 Send Tokens to Another Account
 
 Perform a series of tests to ensure that the application's features work as expected. You could create transactions, sign them, submit them to the network, and check the updated token balance.
 
-## Checkpoint 7: 💰 Interaction 2 (Customize Some Code)
+## Checkpoint 6: 💰 Interaction 2 (Customize Some Code)
 
 Make some modifications to the Payment DApp code to alter its functionality or appearance. This could be a simple UI change or a more complex modification of the application's functionality.
 
-## Checkpoint 8: 🚢 Ship it! 🚁
+## Checkpoint 7: 🚢 Ship it! 🚁
 
 You can upload your app to a hosting platform of your choice. You could use platforms like Netlify, Vercel, or even an AWS S3 bucket.
 
@@ -117,26 +138,43 @@ Then run the following command to deploy your app:
 npx vercel
 ```
 
-Then continue through the prompts(you will not need to modify any settings) until you reach the completion prompt similar to the following:
+Then continue through the prompts until you see the following output:
 
 ```sh
-Vercel CLI 30.1.1
-🔗  Linked to julian-dev28/soroban-example-dapp (created .vercel)
-🔍  Inspect: https://vercel.com/julian-dev28/soroban-example-dapp/C1YZVQSqh6WcyR1uvxz8q2tW1tjD [2s]
-✅  Production: https://soroban-example-dapp-rho.vercel.app [42s]
+No framework detected. Default Project Settings:
+- Build Command: 'npm run vercel-build' or 'npm run build'
+- Development Command: None
+- Install Command: 'yarn install', 'pnpm install', or 'npm install'
+- Output Directory: 'public' if it exists, or '.'
+```
+
+Select `y` to continue, and then select `build` as the output directory.
+
+```sh
+? Want to modify these settings? [y/N] y
+? Which settings would you like to overwrite (select multiple)? Output Directory
+? Output Directory? build
+```
+
+Once the deployment is complete, you should see something similar to the following output:
+
+```sh
+🔗  Linked to julian-dev28/soroban-react-payment (created .vercel)
+🔍  Inspect: https://vercel.com/julian-dev28/soroban-react-payment/AQoFFhZf5K1ufQj57eawApPkFduf [2s]
+✅  Production: https://soroban-react-payment.vercel.app [58s]
 ```
 
 You can now visit the preview link to see your deployed app! 🎉
 
 You will need to add some Futurenet network lumens to your Freighter wallet to interact with the deployed dApp. Visit [https://laboratory.stellar.org/#create-account](https://laboratory.stellar.org/#create-account), and follow the instructions to create your freighter account on Futurenet.
 
-## Checkpoint 9: ✅ Complete the Challenge!
+## Checkpoint 8: ✅ Complete the Challenge!
 
 Submit your public url to the challenge form.
 
 <ChallengeForm />
 
-## Checkpoint 10: 💪 Share Your Accomplishment with the Community
+## Checkpoint 9: 💪 Share Your Accomplishment with the Community
 
 Don't forget to share your work with the community. Let others see what you've accomplished, receive feedback, and inspire others!
 
