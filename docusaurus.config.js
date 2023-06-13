@@ -6,7 +6,7 @@ const darkCodeTheme = require("prism-react-renderer/themes/dracula");
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: "Live Laugh Soroban",
+  title: "Soroban Dapps Challenge",
   tagline:
     "Jumpstart your Dapp development with Soroban, a smart contracts platform that is designed with purpose and built to perform.",
   url: "https://soroban.stellar.org", // Your website URL
