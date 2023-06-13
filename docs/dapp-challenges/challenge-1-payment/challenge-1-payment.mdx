@@ -4,11 +4,28 @@ title: Payment Dapp Challenge
 description: Take on the challenge and master the Soroban Payment Dapp!
 ---
 
+import connect_freighter from "../../../static/img/connect_freighter.png";
+import freighter_settings from "../../../static/img/freighter_settings.png";
+import add_token from "../../../static/img/add_token.png";
+import new_token from "../../../static/img/new_token.png";
+import manage_assets from "../../../static/img/manage_assets.png";
+import added_balance from "../../../static/img/added_balance.png";
+import aucb_balance from "../../../static/img/aucb_balance.png";
+import pmt_dest from "../../../static/img/pmt_dest.png";
+import next from "../../../static/img/next.png";
+import choose_token from "../../../static/img/choose_token.png";
+import select_token from "../../../static/img/select_token.png";
+import payment_settings from "../../../static/img/payment_settings.png";
+import confirm_pmt from "../../../static/img/confirm_pmt.png";
+import submit_pmt from "../../../static/img/submit_pmt.png";
+import end from "../../../static/img/end.png";
+import balance_rcvr from "../../../static/img/balance_rcvr.png";
+
 import { ChallengeForm } from "../../../src/components/atoms/challenge-form";
 
 ## Soroban React Payment Challenge
 
-This challenge will guide you through the process of setting up, customizing, and deploying the Soroban Payment DApp, a blockchain-powered payment application designed to work with the Freighter wallet.
+This challenge will guide you through the process of setting up, customizing, and deploying the Soroban Payment Dapp, a blockchain-powered payment application designed to work with the Freighter wallet.
 
 ## Checkpoint 0: 📦 Install Dependencies
 
@@ -20,7 +37,7 @@ Before you begin, ensure you have the following installed on your system:
 
 ## Checkpoint 1: 🚀 Clone the Repository
 
-Clone and set up the Payment DApp repository:
+Clone and set up the Payment Dapp repository:
 
 ```bash
 git clone https://github.com/stellar/soroban-react-payment.git
@@ -28,11 +45,9 @@ cd soroban-react-payment
 yarn
 ```
 
-Ensure your Freighter wallet is connected to the DApp and that the experimental mode is enabled in Freighter settings: `(Settings(⚙️)>Preferences>ENABLE EXPERIMENTAL MODE).`
-
 ## Checkpoint 2: 🎬 Deploy Smart Contracts
 
-For this step we will need to clone and deploy the Soroban token smart contracts. The Soroban token is a custom token that will be used to facilitate payments in the Payment DApp.
+For this step we will need to clone and deploy the Soroban token smart contracts. The Soroban token is a custom token that will be used to facilitate payments in the Payment Dapp.
 
 In a new terminal window, follow the steps below to build and deploy the smart contracts:
 
@@ -50,7 +65,7 @@ Next, we will need to deploy the smart contracts to Futurenet. To do this, open 
 ```bash
 soroban contract deploy \
     --wasm target/wasm32-unknown-unknown/release/soroban_token_contract.wasm \
-    --source <ADMIN_ACCOUNT_SECRET_KEY>
+    --source <ADMIN_ACCOUNT_SECRET_KEY> \
     --rpc-url https://rpc-futurenet.stellar.org:443 \
     --network-passphrase 'Test SDF Future Network ; October 2022'
 ```
@@ -70,11 +85,21 @@ soroban contract invoke \
     --symbol '"4454"'
 ```
 
+Lets take a look at what is happening here:
+
+- Admin Account: This is the public key of the administrator account. It is the 'master' account that has control over the token contract.
+
+- Decimal Precision: We set this value to 7. This indicates that our token will have 7 decimal places, providing fine-grained control and flexibility in transactions.
+
+- Name: We represent our token's name as a hex encoded string. In this case, '44656d6f20546f6b656e' translates to Demo Token in plaintext.
+
+- Symbol: Like the name, our token's symbol is also a hex-encoded string. For us, '4454' stands for DT in plaintext, serving as a brief, identifiable symbol for our token.
+
 Next we will need to mint some tokens to our sender's account. To do this, run the following command:
 
 ```bash
 soroban contract invoke \
-    --id c069d458f7ce21b7d62f11d0795555f85f74e754235d5187182c7ef55b57ae7e \
+    --id <TOKEN_CONTRACT_ID> \
     --source-account <ADMIN_ACCOUNT_SECRET_KEY> \
     --rpc-url https://rpc-futurenet.stellar.org:443 \
     --network-passphrase 'Test SDF Future Network ; October 2022' \
@@ -85,7 +110,7 @@ soroban contract invoke \
 
 ## Checkpoint 3: 🖥️ Launch the Frontend
 
-Make sure that the frontend of the Payment DApp successfully communicates with the backend, allowing transactions to be created, signed, and submitted to the network.
+Make sure that the frontend of the Payment Dapp successfully communicates with the backend, allowing transactions to be created, signed, and submitted to the network.
 
 Open a terminal in the `soroban-react-payment` directory and run the following command:
 
@@ -102,19 +127,93 @@ $ webpack-dev-server --config config/webpack.dev.js
 ...
 ```
 
-Now open your browser and navigate to `http://localhost:9000/`. You should see the Payment DApp running in your browser.
+Now open your browser and navigate to `http://localhost:9000/`. You should see the Payment Dapp running in your browser.
+
+<img src={connect_freighter} alt="connect" />
 
 ## Checkpoint 4: 📡 Add the Token to Freighter
 
-Add the Soroban token to your Freighter wallet. To do this, open your Freighter wallet and click on the `Manage Assets` button at the bottom of the screen. Then click on the `Add Soroban token ` button and enter the token ID that was returned when you deployed the smart contracts.
+Ensure your Freighter wallet is connected to the Dapp and that the experimental mode is enabled in Freighter settings: `(Settings(⚙️)>Preferences>ENABLE EXPERIMENTAL MODE).`
+
+<img src={freighter_settings} alt="freighter settings" width="50%" />
+
+Add the Soroban token to your Freighter wallet. To do this, open your Freighter wallet and click on the `Manage Assets` button at the bottom of the screen.
+
+<img src={manage_assets} alt="manage assets" width="50%" />
+
+Then click on the `Add Soroban token ` button and enter the token ID that was returned when you deployed the smart contracts.
+
+<img src={add_token} alt="add token" width="50%" />
+
+<br />
+
+<img src={new_token} alt="new token" width="50%" />
+
+You should now see the Soroban token in your Freighter wallet.
+
+<img src={aucb_balance} alt="added balance" width="50%" />
 
 ## Checkpoint 5: 🏦 Send Tokens to Another Account
 
-Perform a series of tests to ensure that the application's features work as expected. You could create transactions, sign them, submit them to the network, and check the updated token balance.
+First, connect Frieghter and Select the account that will be used to send Soroban tokens.
 
-## Checkpoint 6: 💰 Interaction 2 (Customize Some Code)
+Click "next" to continue.
 
-Make some modifications to the Payment DApp code to alter its functionality or appearance. This could be a simple UI change or a more complex modification of the application's functionality.
+<img src={next} alt="next" />
+
+Provide the public key of the account that will receive the Soroban tokens.
+
+<img src={pmt_dest} alt="payment destination" />
+
+Input the Token ID of the Soroban token.
+
+<img src={choose_token} alt="choose token" />
+
+Input the amount of Soroban tokens to send.
+
+<img src={select_token} alt="select token" />
+
+Confirm the payment settings.
+
+<img src={payment_settings} alt="payment settings" />
+
+Review the transaction details to ensure accuracy and then click the "Sign with Freighter" once . Freighter will prompt you to sign the transaction with your wallet's private key.
+
+<img src={confirm_pmt} alt="confirm payment" />
+
+Once signed, the click the "Submit payment" button and the transaction will be submitted to the network.
+
+<img src={submit_pmt} alt="submit payment" />
+
+The Payment Dapp will show a confirmation message once the transaction has been successfully submitted.
+
+<img src={end} alt="end" />
+
+You can now check the balance of the receiving account to ensure that the transaction was successful.
+
+<img src={balance_rcvr} alt="balance receiver" width="50%" />
+
+You can also check the balance of an account with Soroban cli by running the following command:
+
+```bash
+ soroban contract invoke \
+    --id <TOKEN_CONTRACT_ID> \
+    --source-account <ANY_SECRET_KEY> \
+    --rpc-url https://rpc-futurenet.stellar.org:443 \
+    --network-passphrase 'Test SDF Future Network ; October 2022' \
+    -- balance \
+    --id <RECIPIENT_PUBLIC_KEY> \
+```
+
+Output:
+
+```bash
+"1000000000"
+```
+
+## Checkpoint 6: 💰 Customize Some Code
+
+Make some modifications to the Payment Dapp code to alter its functionality or appearance. This could be a simple UI change or a more complex modification of the application's functionality.
 
 ## Checkpoint 7: 🚢 Ship it! 🚁
 
@@ -179,7 +278,7 @@ Submit your public url to the challenge form.
 Don't forget to share your work with the community. Let others see what you've accomplished, receive feedback, and inspire others!
 
 ⚔️ Side Quests
-If you're up for an extra challenge, consider exploring more advanced features of the Soroban Payment DApp, the Freighter wallet, or the Stellar network itself.
+If you're up for an extra challenge, consider exploring more advanced features of the Soroban Payment Dapp, the Freighter wallet, or the Stellar network itself.
 
 📚 User Workflows Checklist
 To ensure that you've covered all the key user actions during the challenge, follow this checklist:
