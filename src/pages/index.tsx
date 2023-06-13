@@ -63,10 +63,20 @@ const GettingStarted = () => (
   <div className="GettingStarted">
     <div className="hp-center">
       <div className="GettingStarted__cards">
+      <div className="Hero__title">
+          <div>Start Building</div>
+          </div>
         <GettingStartedCard
           title="Build a Crowdfunding Dapp"
           subtitle="Create a decentralized application for crowdfunding projects."
           href="/docs/category/crowdfund"
+          index={undefined}
+        />
+
+        <GettingStartedCard
+          title="Build a Payment Dapp"
+          subtitle="Create a decentralized application for sending Soroban Tokens."
+          href="/docs/category/payment"
           index={undefined}
         />
 
@@ -117,9 +127,9 @@ const Hero: React.FC = () => (
           <img src="/img/landing/soroban-white.svg" alt="Logo" />
         </div>
         <div className="Hero__title">
-          <div>Live</div>
-          <div>Laugh</div>
           <div>Soroban</div>
+          <div>Dapps</div>
+          <div>Challenge</div>
         </div>
       </div>
       <div className="Hero__right">
