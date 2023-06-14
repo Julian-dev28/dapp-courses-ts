@@ -5,10 +5,33 @@ export function ChallengeForm() {
   const [url, setUrl] = useState("");
   const [publicKey, setPublicKey] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Do something with url and publicKey
-    console.log(url, publicKey);
+
+    try {
+      const response = await fetch(
+        "https://dapp-wrangler.julian-martinez.workers.dev/",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ publickey: publicKey, url: url }),
+        }
+      );
+
+      if (response.ok) {
+        // Request succeeded, handle the response
+        const data = await response.json();
+        console.log(data);
+      } else {
+        // Request failed, handle the error
+        console.error("Request failed with status:", response.status);
+      }
+    } catch (error) {
+      // Handle or log the error here
+      console.error(error);
+    }
   };
 
   return (
@@ -19,7 +42,11 @@ export function ChallengeForm() {
           className={styles.input}
           type="text"
           value={publicKey}
-          onChange={(e) => setPublicKey(e.target.value)}
+          onChange={(e) => {
+            const publicKey = e.target.value;
+            setPublicKey(publicKey);
+            console.log("Public Key:", publicKey);
+          }}
           required
         />
       </label>
@@ -29,7 +56,11 @@ export function ChallengeForm() {
           className={styles.input}
           type="url"
           value={url}
-          onChange={(e) => setUrl(e.target.value)}
+          onChange={(e) => {
+            const url = e.target.value;
+            setUrl(url);
+            console.log("URL:", url);
+          }}
           required
         />
       </label>
