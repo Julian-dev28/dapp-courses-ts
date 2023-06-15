@@ -3,9 +3,11 @@ import Head from "@docusaurus/Head";
 import Layout from "@theme/Layout";
 import clsx from "clsx";
 import { ConnectButton } from "../../src/components/atoms/connect-button";
-import { CompletedCoursesCard } from "../components/atoms/courses-card";
+import { DeployedProjectsCard } from "../components/atoms/courses-card";
+import { CompletedCoursesCard } from "../components/atoms/courses-completed";
 import { UserCard } from "../components/atoms/user-card";
 import { ChallengeCard } from "../components/atoms/start-challenge-card";
+
 import { CardContainer } from "../components/molecules/card-container";
 import { useSorobanReact, SorobanReactProvider } from "@soroban-react/core";
 import { SorobanEventsProvider } from "@soroban-react/events";
@@ -48,12 +50,13 @@ function LoginComponent() {
           alignItems: "center",
         }}
       >
-        {!address && <ConnectButton label={"Connect Wallet"} />}
+        {/* {!address && <ConnectButton label={"Connect Wallet"} />}
         {address && <UserCard addressHex={address} />}
+        {address && <DeployedProjectsCard addressHex={address} />}
         {address && <CompletedCoursesCard addressHex={address} />}
-        {address && <ChallengeCard />}
-{/* 
-        <CardContainer addressHex={address} /> */}
+        {address && <ChallengeCard />} */}
+
+        <CardContainer addressHex={address} />
       </div>
     </main>
   );

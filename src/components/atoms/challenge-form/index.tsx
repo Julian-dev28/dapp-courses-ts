@@ -1,9 +1,14 @@
 import React, { useState } from "react";
 import styles from "./style.module.css";
 
-export function ChallengeForm() {
+interface ChallengeFormProps {
+  courseId: number[];
+}
+
+export function ChallengeForm({ courseId }: ChallengeFormProps) {
   const [url, setUrl] = useState("");
   const [publicKey, setPublicKey] = useState("");
+  const [courseIdState, setCourseId] = useState(courseId);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -16,13 +21,17 @@ export function ChallengeForm() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ publickey: publicKey, url: url }),
+          body: JSON.stringify({
+            publickey: publicKey,
+            url: url,
+            completed: [courseIdState],
+          }),
         }
       );
 
       if (response.ok) {
         // Request succeeded, handle the response
-        const data = await response.json();
+        const data = await response;
         console.log(data);
       } else {
         // Request failed, handle the error

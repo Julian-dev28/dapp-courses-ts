@@ -5,30 +5,39 @@ interface CardProps {
   addressHex: string;
 }
 
-const getCompletedCourses = (address: string) => {
-  // Mock for now.
-  return [
-    "Crowdfund Dapp: www.Crowdfund-dapp.vercel.com",
-    "AMM Dapp: AMM-dapp.vercel.com",
-    "Staking Dapp: Staking-dapp.vercel.com",
-  ];
+interface Course {
+  publickey: string;
+  url: string;
+}
+
+const fetchCourses = async (address: string): Promise<string[]> => {
+  try {
+    const response = await fetch(
+      "https://dapp-wrangler.julian-martinez.workers.dev/"
+    ); // replace with your
+    const data: Course[] = await response.json();
+
+    return data
+      .filter((course) => course.publickey === address)
+      .map((course) => course.url);
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
 };
 
-
-export function CompletedCoursesCard({ addressHex }: CardProps) {
+export function DeployedProjectsCard({ addressHex }: CardProps) {
   const [completedCourses, setCompletedCourses] = useState<string[]>([]);
 
-  // Use an effect to fetch the completed courses when the address changes.
   useEffect(() => {
     if (addressHex) {
-      const courses = getCompletedCourses(addressHex);
-      setCompletedCourses(courses);
+      fetchCourses(addressHex).then((courses) => setCompletedCourses(courses));
     }
   }, [addressHex]);
 
   return (
     <div className={styles.card}>
-      <h3>Completed Courses:</h3>
+      <h3>Dapp Deployments</h3>
       <ul>
         {completedCourses.map((course, index) => (
           <li key={index}>{course}</li>
@@ -37,5 +46,3 @@ export function CompletedCoursesCard({ addressHex }: CardProps) {
     </div>
   );
 }
-
-
