@@ -45,8 +45,9 @@ export function CompletedCoursesCard({ addressHex }: CardProps) {
     0: "Crowdfund",
     // Add more mappings here as needed
     1: "Payment",
-    2: "Yet Another Course",
-    // ...
+    2: "Minting",
+    3: "AMM",
+    4: "Staking",
   };
 
   return (
