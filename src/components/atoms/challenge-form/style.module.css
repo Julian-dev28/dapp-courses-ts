@@ -53,6 +53,25 @@
   align-self: baseline;
 }
 
+.success {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: left;
+  padding: 16px 12px;
+  gap: 8px;
+  border-radius: 8px;
+  border: 0;
+  height: 38px;
+  font-weight: 600;
+  font-size: 28px;
+  line-height: 22px;
+  color: #1a1523;
+  cursor: pointer;
+  align-self: baseline;
+}
+
+
 [data-theme="dark"] .button {
   display: flex;
   flex-direction: row;

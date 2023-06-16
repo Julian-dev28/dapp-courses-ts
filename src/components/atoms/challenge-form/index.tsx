@@ -9,6 +9,7 @@ export function ChallengeForm({ courseId }: ChallengeFormProps) {
   const [url, setUrl] = useState("");
   const [publicKey, setPublicKey] = useState("");
   const [courseIdState, setCourseId] = useState(courseId);
+  const [isSubmittedSuccessfully, setIsSubmittedSuccessfully] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,8 +32,9 @@ export function ChallengeForm({ courseId }: ChallengeFormProps) {
 
       if (response.ok) {
         // Request succeeded, handle the response
-        const data = await response;
+        const data = response;
         console.log(data);
+        setIsSubmittedSuccessfully(true);
       } else {
         // Request failed, handle the error
         console.error("Request failed with status:", response.status);
@@ -44,38 +46,44 @@ export function ChallengeForm({ courseId }: ChallengeFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className={styles.challengeform}>
-      <label>
-        Public Key:
-        <input
-          className={styles.input}
-          type="text"
-          value={publicKey}
-          onChange={(e) => {
-            const publicKey = e.target.value;
-            setPublicKey(publicKey);
-            console.log("Public Key:", publicKey);
-          }}
-          required
-        />
-      </label>
-      <label>
-        Public URL:
-        <input
-          className={styles.input}
-          type="url"
-          value={url}
-          onChange={(e) => {
-            const url = e.target.value;
-            setUrl(url);
-            console.log("URL:", url);
-          }}
-          required
-        />
-      </label>
-      <button type="submit" className={styles.button}>
-        Submit
-      </button>
-    </form>
+    <div >
+      <form onSubmit={handleSubmit} className={styles.challengeform}>
+        <label>
+          Public Key:
+          <input
+            className={styles.input}
+            type="text"
+            value={publicKey}
+            onChange={(e) => {
+              const publicKey = e.target.value;
+              setPublicKey(publicKey);
+              console.log("Public Key:", publicKey);
+            }}
+            required
+          />
+        </label>
+        <label>
+          Public URL:
+          <input
+            className={styles.input}
+            type="url"
+            value={url}
+            onChange={(e) => {
+              const url = e.target.value;
+              setUrl(url);
+              console.log("URL:", url);
+            }}
+            required
+          />
+        </label>
+        <button type="submit" className={styles.button}>
+          Submit
+        </button>
+      </form>
+      <br />
+      {isSubmittedSuccessfully && (
+        <p className={styles.success}>Challenge Complete!</p>
+      )}
+    </div>
   );
 }
