@@ -1,3 +1,7 @@
+# Dapps Challenge
+
+This repository contains the source code for the Dapps Challenge website.
+
 # Website
 
 This website is built using [Docusaurus 2](https://docusaurus.io/), a modern static website generator.
