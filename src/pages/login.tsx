@@ -30,7 +30,7 @@ export default function Login({ children }: { children: React.ReactNode }) {
 
 function LoginComponent() {
   // Here you can use your hook
-  const { address, disconnect } = useSorobanReact();
+  const { address } = useSorobanReact();
 
   return (
     <main className="login">

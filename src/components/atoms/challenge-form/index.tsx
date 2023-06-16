@@ -1,13 +1,21 @@
 import React, { useState } from "react";
 import styles from "./style.module.css";
+import { useSorobanReact, SorobanReactProvider } from "@soroban-react/core";
+import { SorobanEventsProvider } from "@soroban-react/events";
+import { futurenet, sandbox, standalone } from "@soroban-react/chains";
+import { freighter } from "@soroban-react/freighter";
+import { ChainMetadata, Connector } from "@soroban-react/types";
+
+const chains: ChainMetadata[] = [sandbox, standalone, futurenet];
+const connectors: Connector[] = [freighter()];
 
 interface ChallengeFormProps {
   courseId: number[];
+  address?: string;
 }
 
-export function ChallengeForm({ courseId }: ChallengeFormProps) {
+function ChallengeForm2({ address, courseId }: ChallengeFormProps) {
   const [url, setUrl] = useState("");
-  const [publicKey, setPublicKey] = useState("");
   const [courseIdState, setCourseId] = useState(courseId);
   const [isSubmittedSuccessfully, setIsSubmittedSuccessfully] = useState(false);
 
@@ -23,7 +31,7 @@ export function ChallengeForm({ courseId }: ChallengeFormProps) {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            publickey: publicKey,
+            publickey: address,
             url: url,
             completed: [courseIdState],
           }),
@@ -46,22 +54,8 @@ export function ChallengeForm({ courseId }: ChallengeFormProps) {
   };
 
   return (
-    <div >
+    <div>
       <form onSubmit={handleSubmit} className={styles.challengeform}>
-        <label>
-          Public Key:
-          <input
-            className={styles.input}
-            type="text"
-            value={publicKey}
-            onChange={(e) => {
-              const publicKey = e.target.value;
-              setPublicKey(publicKey);
-              console.log("Public Key:", publicKey);
-            }}
-            required
-          />
-        </label>
         <label>
           Public URL:
           <input
@@ -72,6 +66,7 @@ export function ChallengeForm({ courseId }: ChallengeFormProps) {
               const url = e.target.value;
               setUrl(url);
               console.log("URL:", url);
+              console.log("Public Key:", address);
             }}
             required
           />
@@ -86,4 +81,33 @@ export function ChallengeForm({ courseId }: ChallengeFormProps) {
       )}
     </div>
   );
+}
+
+export function ParentChallengeForm({ courseId }: { courseId: number[] }) {
+  return (
+    <SorobanReactProvider
+      chains={chains}
+      connectors={connectors}
+      appName={"course completion"}
+    >
+      <SorobanEventsProvider>
+        <InnerComponent courseId={courseId} />
+      </SorobanEventsProvider>
+    </SorobanReactProvider>
+  );
+}
+function InnerComponent({ courseId }: { courseId: number[] }) {
+  const { address, connect } = useSorobanReact();
+
+  // if user is not logged in (address is undefined), render the Login button
+  if (!address) {
+    return (
+      <button onClick={() => connect()} className={styles.button}>
+        Login
+      </button>
+    );
+  }
+
+  // if user is logged in, render the ChallengeForm2
+  return <ChallengeForm2 address={address} courseId={courseId} />;
 }
