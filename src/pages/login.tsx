@@ -1,12 +1,5 @@
 import React from "react";
-import Head from "@docusaurus/Head";
 import Layout from "@theme/Layout";
-import clsx from "clsx";
-import { ConnectButton } from "../../src/components/atoms/connect-button";
-import { DeployedProjectsCard } from "../components/atoms/courses-card";
-import { CompletedCoursesCard } from "../components/atoms/courses-completed";
-import { UserCard } from "../components/atoms/user-card";
-import { ChallengeCard } from "../components/atoms/start-challenge-card";
 
 import { CardContainer } from "../components/molecules/card-container";
 import { useSorobanReact, SorobanReactProvider } from "@soroban-react/core";
@@ -37,7 +30,7 @@ export default function Login({ children }: { children: React.ReactNode }) {
 
 function LoginComponent() {
   // Here you can use your hook
-  const { address } = useSorobanReact();
+  const { address, disconnect } = useSorobanReact();
 
   return (
     <main className="login">
@@ -50,12 +43,6 @@ function LoginComponent() {
           alignItems: "center",
         }}
       >
-        {/* {!address && <ConnectButton label={"Connect Wallet"} />}
-        {address && <UserCard addressHex={address} />}
-        {address && <DeployedProjectsCard addressHex={address} />}
-        {address && <CompletedCoursesCard addressHex={address} />}
-        {address && <ChallengeCard />} */}
-
         <CardContainer addressHex={address} />
       </div>
     </main>
