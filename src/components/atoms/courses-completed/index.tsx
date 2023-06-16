@@ -43,7 +43,6 @@ export function CompletedCoursesCard({ addressHex }: CardProps) {
 
   const courseMapping: { [key: number]: string } = {
     0: "Crowdfund",
-    // Add more mappings here as needed
     1: "Payment",
     2: "Minting",
     3: "AMM",
@@ -52,7 +51,7 @@ export function CompletedCoursesCard({ addressHex }: CardProps) {
 
   return (
     <div className={styles.card}>
-      <h3>Completed Courses</h3>
+      <h3>Completed Challenges</h3>
       <ul>
         {completedCourses.map((course, index) => (
           <li key={index}>
