@@ -108,6 +108,6 @@ function InnerComponent({ courseId }: { courseId: number[] }) {
     );
   }
 
-  // if user is logged in, render the ChallengeForm2
+  // if user is logged in, render the ChallengeForm
   return <ChallengeForm2 address={address} courseId={courseId} />;
 }
