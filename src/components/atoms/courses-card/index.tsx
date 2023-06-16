@@ -42,7 +42,11 @@ export function DeployedProjectsCard({ addressHex }: CardProps) {
       <h3>Dapp Deployments</h3>
       <ul>
         {deployments.map((deployment, index) => (
-          <li key={index}>{deployment}</li>
+          <li key={index}>
+            <a href={deployment} target="_blank" rel="noopener noreferrer">
+              {deployment}
+            </a>
+          </li>
         ))}
       </ul>
     </div>
